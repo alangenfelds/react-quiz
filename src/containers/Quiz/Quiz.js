@@ -1,40 +1,20 @@
 import React, {Component} from 'react';
+import axios from '../../axios/axios-quiz';
 
 import classes from './Quiz.css';
 import ActiveQuiz from '../../components/ActiveQuiz/ActiveQuiz';
 import FinishedQuiz from '../../components/FinishedQuiz/FinishedQuiz';
+import Loader from '../../components/UI/Loader/Loader';
 
 class Quiz extends Component {
 
     state = {
+        loading: true,
         results: {}, // {[id]: success error }
         isFinished: false,
         activeQuestion: 0,
         answerState: null, // {[id]: 'success' 'error'}
-        quiz: [
-            {
-                id: 1,
-                question: 'Какого цвета небо?',
-                rightAnswerId: 1,
-                answers: [
-                    {text: 'Синий', id: 1},
-                    {text: 'Красный', id: 2},
-                    {text: 'Чёрный', id: 3},
-                    {text: 'Зелёный', id: 4},
-                ]
-            },
-            {
-                id: 2,
-                question: 'В каком году основали Санкт-Петербург?',
-                rightAnswerId: 3,
-                answers: [
-                    {text: '1700', id: 1},
-                    {text: '1702', id: 2},
-                    {text: '1703', id: 3},
-                    {text: '1803', id: 4},
-                ]
-            }
-        ]
+        quiz: []
     }
 
     isQuizFinished () {
@@ -91,11 +71,44 @@ class Quiz extends Component {
 
     componentDidMount(){
         console.log('Quiz id = ' + this.props.match.params.id);
+        let quiz = [];
+
+        axios.get(`/quizes/${this.props.match.params.id}.json` )
+            .then(response => {
+                console.log(response.data);
+
+                quiz = response.data;
+
+                // Object.keys(response.data).forEach( (key, index) => {
+                //     console.log('key', key)
+
+                //     const quizItem = response.data[key];
+
+                //     quiz.push({
+                //         id: quizItem.id,
+                //         question: quizItem.data,
+                //         rightAnswerId: quizItem.rightAnswerId,
+                //         answers: quizItem.answers
+                //     })
+                // } )
+
+                this.setState({
+                    quiz,
+                    loading: false
+                })
+
+            })
+            .catch(error => console.log(error))
+
+
     }
 
     render(){
         return (
             <div className={classes.Quiz}>
+            
+            {this.state.loading ? <Loader /> 
+            :
                 <div className={classes.QuizWrapper}>
                     <h1>Выберите свой ответ</h1>
                     {
@@ -115,6 +128,7 @@ class Quiz extends Component {
                     />
                     }
                 </div>
+            }
             </div>
         )
     }
