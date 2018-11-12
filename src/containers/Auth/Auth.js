@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import is from 'is_js';
+import axios from 'axios';
 
 import classes from "./Auth.css";
 import Button from "../../components/UI/Button/Button";
@@ -44,11 +45,37 @@ export default class Auth extends Component {
     }
 
     loginHandler = () => {
+        const FIREBASE_AUTH = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=';
+        const API_KEY = 'AIzaSyB8hCAytWwhvZ9qr4I6v5CA2ZD1sFt6A74';
 
+        const AUTH_DATA = {
+            email: this.state.formControls.email.value,
+            password: this.state.formControls.password.value,
+            returnSecureToken: true
+        }
+
+        axios.post(FIREBASE_AUTH+API_KEY, AUTH_DATA)
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => console.log(err));
     }
 
     registerHandler = () => {
-        
+        const FIREBASE_AUTH = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=';
+        const API_KEY = 'AIzaSyB8hCAytWwhvZ9qr4I6v5CA2ZD1sFt6A74';
+
+        const AUTH_DATA = {
+            email: this.state.formControls.email.value,
+            password: this.state.formControls.password.value,
+            returnSecureToken: true
+        }
+
+        axios.post(FIREBASE_AUTH+API_KEY, AUTH_DATA)
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => console.log(err));
     }
 
     submitHandler = (event) => {
