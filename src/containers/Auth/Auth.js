@@ -1,18 +1,18 @@
 import React, { Component } from "react";
 import is from 'is_js';
-import axios from 'axios';
+import {connect} from 'react-redux'
 
 import classes from "./Auth.css";
 import Button from "../../components/UI/Button/Button";
 import Input from '../../components/UI/Input/Input';
-
+import {auth} from '../../store/actions/auth';
 
 // function validateEmail(email) {
 //     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 //     return re.test(String(email).toLowerCase());
 // }
 
-export default class Auth extends Component {
+class Auth extends Component {
 
     state = {
         isFormValid: false,
@@ -45,37 +45,19 @@ export default class Auth extends Component {
     }
 
     loginHandler = () => {
-        const FIREBASE_AUTH = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=';
-        const API_KEY = 'AIzaSyB8hCAytWwhvZ9qr4I6v5CA2ZD1sFt6A74';
-
-        const AUTH_DATA = {
-            email: this.state.formControls.email.value,
-            password: this.state.formControls.password.value,
-            returnSecureToken: true
-        }
-
-        axios.post(FIREBASE_AUTH+API_KEY, AUTH_DATA)
-            .then(res => {
-                console.log(res);
-            })
-            .catch(err => console.log(err));
+        this.props.auth(
+            this.state.formControls.email.value,
+            this.state.formControls.password.value,
+            true
+            )
     }
 
     registerHandler = () => {
-        const FIREBASE_AUTH = 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=';
-        const API_KEY = 'AIzaSyB8hCAytWwhvZ9qr4I6v5CA2ZD1sFt6A74';
-
-        const AUTH_DATA = {
-            email: this.state.formControls.email.value,
-            password: this.state.formControls.password.value,
-            returnSecureToken: true
-        }
-
-        axios.post(FIREBASE_AUTH+API_KEY, AUTH_DATA)
-            .then(res => {
-                console.log(res);
-            })
-            .catch(err => console.log(err));
+        this.props.auth(
+            this.state.formControls.email.value,
+            this.state.formControls.password.value,
+            false
+            )
     }
 
     submitHandler = (event) => {
@@ -176,3 +158,13 @@ export default class Auth extends Component {
     );
   }
 }
+
+
+  
+  const mapDispatchToProps = dispatch => {
+    return {
+        auth: (email, password, isLogin) => dispatch(auth(email, password, isLogin))
+    };
+  };
+
+export default connect(null,mapDispatchToProps)(Auth);

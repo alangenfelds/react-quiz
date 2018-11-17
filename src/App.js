@@ -1,25 +1,45 @@
-import React, { Component } from 'react';
-import {Route, Switch} from 'react-router-dom';
+import React, { Component } from "react";
+import { Route, Switch, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
 
-import Layout from './hoc/Layout/Layout';
-import Quiz from './containers/Quiz/Quiz';
-import QuizList from './containers/QuizList/QuizList';
-import Auth from './containers/Auth/Auth';
-import QuizCreator from './containers/QuizCreator/QuizCreator';
+import Layout from "./hoc/Layout/Layout";
+import Quiz from "./containers/Quiz/Quiz";
+import QuizList from "./containers/QuizList/QuizList";
+import Auth from "./containers/Auth/Auth";
+import QuizCreator from "./containers/QuizCreator/QuizCreator";
+import Logout from './components/Logout/Logout';
 
 class App extends Component {
   render() {
-    return (
-      <Layout>
-          <Switch>
-              <Route path={'/auth'} component={Auth}/>
-              <Route path={'/quiz-creator'} component={QuizCreator}/>
-              <Route path={'/quiz/:id'} component={Quiz}/>
-              <Route path={'/'} component={QuizList}/>
-          </Switch>
-      </Layout>
+    let routes = (
+      <Switch>
+        <Route path={"/auth"} component={Auth} />
+        <Route path={"/quiz/:id"} component={Quiz} />
+        <Route path={"/"} component={QuizList} />
+        <Redirect to="/" />
+      </Switch>
     );
+
+    if (this.props.isAuthenticated) {
+      routes = (
+        <Switch>
+        <Route path={"/quiz-creator"} component={QuizCreator} />
+        <Route path={"/quiz/:id"} component={Quiz} />
+        <Route path={"/"} component={QuizList} />
+        <Route path={"/logout"} component={Logout} />
+        <Redirect to="/" />
+      </Switch>
+      );
+    }
+
+    return <Layout>{routes}</Layout>;
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    isAuthenticated: !!state.auth.token
+  };
+};
+
+export default connect(mapStateToProps)(App);
