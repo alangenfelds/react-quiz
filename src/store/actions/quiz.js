@@ -38,7 +38,7 @@ export function fetchQuizes() {
 }
 
 export function fetchQuizById(quizId) {
-    console.log(quizId)
+    // console.log(quizId)
     return dispatch => {
         dispatch(fetchQuizesStart());
 
